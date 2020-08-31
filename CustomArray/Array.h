@@ -22,6 +22,22 @@ public:
 		m_size = size;
 	}
 
+	T &operator[](int index)
+	{
+		assert(isInBounds(index));
+		return m_array[index];
+	}
+
+	friend std::ostream &operator<<(std::ostream &out, const Array<T> &array)
+	{
+		for (int i{ 0 }; i < array.size(); ++i)
+		{
+			out << array.m_array[i] << " ";
+		}
+
+		return out;
+	}
+
 	int size() const { return m_size; }
 
 	bool isInBounds(const int index)
@@ -34,22 +50,6 @@ public:
 		assert(isInBounds(index));
 
 		return m_array[index];
-	}
-
-	T& operator[](int index)
-	{
-		assert(isInBounds(index));
-		return m_array[index];
-	}
-
-	friend std::ostream& operator<<(std::ostream &out, const Array<T> &array)
-	{
-		for (int i{ 0 }; i < array.size(); ++i)
-		{
-			out << array.m_array[i] << " ";
-		}
-
-		return out;
 	}
 
 	void replace(const int index, const T &element)
