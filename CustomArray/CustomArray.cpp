@@ -6,7 +6,7 @@
 
 int main()
 {
-    Array<int> arr{5};
+    /*Array<int> arr{5};
 
     std::cout << arr << '\n';
     std::cout << arr[0] << '\n';
@@ -20,7 +20,11 @@ int main()
 
     std::cout << arr << '\n';
 
-    std::cout << arr.subArr(0, 2) << '\n';
+    std::cout << arr.subArr(0, 2) << '\n';*/
+
+    Array<int> arr2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    std::cout << arr2 << '\n';
 
     return 0;
 }

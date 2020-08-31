@@ -1,10 +1,10 @@
 //#pragma once
+#ifndef CUSTOMARRAY
+#define CUSTOMARRAY
 
 #include <cassert>
 #include <iostream>
-
-#ifndef CUSTOMARRAY
-#define CUSTOMARRAY
+#include <initializer_list>
 
 template <typename T>
 class Array {
@@ -20,6 +20,18 @@ public:
 		assert(size > 0);
 		m_array = new T[size]{};
 		m_size = size;
+	}
+
+	Array(std::initializer_list<T> list) : Array(static_cast<int>(list.size()))
+	{
+		assert(list.size() > 0);
+
+		int arrayIndex{ 0 };
+		for (T element : list)
+		{
+			m_array[arrayIndex] = element;
+			++arrayIndex;
+		}
 	}
 
 	T &operator[](int index)
