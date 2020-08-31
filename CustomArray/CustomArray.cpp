@@ -6,6 +6,9 @@
 
 int main()
 {
-    Array<int> arr{};
+    Array<int> arr{5};
+
+    std::cout << arr << '\n';
+    std::cout << arr[0] << '\n';
     return 0;
 }
