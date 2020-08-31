@@ -70,6 +70,72 @@ public:
 		m_array[index] = element;
 	}
 
+	void insertAt(const int index, const T &element)
+	{
+		assert(index >= 0 && index <= m_size);
+
+		T *newArr{ new T[m_size + 1] };
+
+		for (int before{ 0 }; before < index; ++before)
+		{
+			newArr[before] = m_array[before];
+		}
+
+		newArr[index] = element;
+
+		for (int after{ index }; after < m_size; ++after)
+		{
+			newArr[after + 1] = m_array[after];
+		}
+
+		delete[] m_array;
+		m_array = newArr;
+		++m_size;
+	}
+
+	void prepend(const T &element)
+	{
+		insertAt(0, element);
+	}
+
+	void append(const T &element)
+	{
+		insertAt(m_size, element);
+	}
+
+	T removeAt(const int index)
+	{
+		T *newArr{ new T[m_size - 1] };
+
+		int newArrIndex{ 0 };
+
+		for (int i{ 0 }; i < m_size; ++i)
+		{
+			if (i == index) continue;
+
+			newArr[newArrIndex] = m_array[i];
+			++newArrIndex;
+		}
+
+		T returnValue = m_array[index];
+
+		delete[] m_array;
+		m_array = newArr;
+		--m_size;
+
+		return returnValue;
+	}
+
+	T pop_front()
+	{
+		return removeAt(0);
+	}
+
+	T pop_back()
+	{
+		return removeAt(m_size - 1);
+	}
+
 	Array<T> subArr(const int startIndex, const int endIndex = m_size)
 	{
 		assert(endIndex > startIndex && startIndex != endIndex);

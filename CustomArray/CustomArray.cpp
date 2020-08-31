@@ -6,25 +6,25 @@
 
 int main()
 {
-    /*Array<int> arr{5};
-
-    std::cout << arr << '\n';
-    std::cout << arr[0] << '\n';
-
-    arr[0] = 2;
-    arr[1] = 3;
-
-    //std::cout << arr[0] << " " << arr[1] << '\n';
-
-    arr.replace(1, 6);
+    Array<int> arr{ 1, 2, 4, 5, 6 };
 
     std::cout << arr << '\n';
 
-    std::cout << arr.subArr(0, 2) << '\n';*/
+    arr.insertAt(2, 3);
+    arr.prepend(0);
+    arr.append(7);
 
-    Array<int> arr2{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    std::cout << arr << '\n';
 
-    std::cout << arr2 << '\n';
+    int removeSelectedIndex = arr.removeAt(2);
+    int removeFront = arr.pop_front();
+    int removeBack = arr.pop_back();
+
+    std::cout << "Removed element " << removeSelectedIndex << " at index 2.\n";
+    std::cout << "Removed element " << removeFront << " from the front.\n";
+    std::cout << "Removed element " << removeBack << " from the back.\n";
+
+    std::cout << arr << '\n';
 
     return 0;
 }
