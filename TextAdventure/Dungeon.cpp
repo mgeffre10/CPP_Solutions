@@ -81,13 +81,13 @@ void Dungeon::generateAdjacentRooms()
 		while (connectionAttempts < 4 && shouldAddAnotherRoom) // Don't want this to go on forever
 		{
 			int minValue{ 1 };
-			int maxValue{ m_rooms.size() };
+			int maxValue{ static_cast<int>(m_rooms.size()) };
 			int roomIdToAdd{ Random::getRandomNumberInRange(minValue, maxValue) };
 			auto room{ getRoomById(roomIdToAdd) };
 
 			while (roomIdToAdd == currentRoom.id
-				|| (room.first.type == RoomType::Exit && room.second.size() == 3)
-				|| (room.first.type != RoomType::Exit && room.second.size() == 4)
+				|| (room.first.type == RoomType::Exit && static_cast<int>(room.second.size()) == 3)
+				|| (room.first.type != RoomType::Exit && static_cast<int>(room.second.size()) == 4)
 				|| room.first.type == currentRoom.type)
 			{
 				roomIdToAdd = Random::getRandomNumberInRange(minValue, maxValue);
@@ -180,21 +180,21 @@ void Dungeon::generateAdjacentRooms()
 
 			switch (roomToAdd.first)
 			{
-			case 'N':
-				addedRoom.second.insert({ 'S', currentRoom.id });
-				break;
-			case 'S':
-				addedRoom.second.insert({ 'N', currentRoom.id });
-				break;
-			case 'W':
-				addedRoom.second.insert({ 'W', currentRoom.id });
-				break;
-			case 'E':
-				addedRoom.second.insert({ 'E', currentRoom.id });
-				break;
-			default:
-				std::cerr << "Error, unknown direction passed.\n";
-				return;
+				case 'N':
+					addedRoom.second.insert({ 'S', currentRoom.id });
+					break;
+				case 'S':
+					addedRoom.second.insert({ 'N', currentRoom.id });
+					break;
+				case 'W':
+					addedRoom.second.insert({ 'W', currentRoom.id });
+					break;
+				case 'E':
+					addedRoom.second.insert({ 'E', currentRoom.id });
+					break;
+				default:
+					std::cerr << "Error, unknown direction passed.\n";
+					return;
 			}
 			
 			if (currentRoom.type != RoomType::Exit)
@@ -218,20 +218,32 @@ void Dungeon::generateAdjacentRooms()
 std::map<char, int> Dungeon::getAdjacentRooms(int roomId)
 {
 	std::cout << "Get adjacent rooms of room " << roomId << '\n';
-	return std::map<char, int>{};
+	return getRoomById(roomId).second;
 }
 
 std::vector<char> Dungeon::getOpenDirections(std::map<char, int> currentRoom, std::map<char, int> adjRoom)
 {
-	std::cout << "Getting open directions of both currentRoom and adjRoom\n";
-	return std::vector{ 'N' };
+	std::vector<char> openDirections{};
+
+	for (const auto entry : currentRoom)
+	{
+		if (entry.first == 'N' && adjRoom.find('S') != adjRoom.end()) openDirections.push_back('N');
+		else if (entry.first == 'S' && adjRoom.find('N') != adjRoom.end()) openDirections.push_back('S');
+		else if (entry.first == 'W' && adjRoom.find('E') != adjRoom.end()) openDirections.push_back('W');
+		else if (entry.first == 'E' && adjRoom.find('W') != adjRoom.end()) openDirections.push_back('E');
+	}
+
+	return openDirections;
 }
 
 std::pair<Room, std::map<char, int>> Dungeon::getRoomById(int roomId)
 {
 	std::cout << "Getting room " << roomId << '\n';
-	Room room{};
-	return { room, std::set<char, int>{} };
+	
+	auto room{ std::find_if(m_rooms.begin(), m_rooms.end(),[roomId](auto pair) {return pair.first.id == roomId; }) };
+	
+	if (room != m_rooms.end()) return *room;
+	return {};
 }
 
 void Dungeon::printMap()
@@ -248,6 +260,7 @@ void Dungeon::printMap()
 		{
 			std::cout << room.second << room.first << ' ';
 		}
+
 		std::cout << '\n';
 	}
 }
