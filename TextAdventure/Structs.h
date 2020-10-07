@@ -5,6 +5,14 @@
 #include "Enums.h"
 #include "Enemy.h"
 
+#include <map>
+
+struct Position
+{
+	int xPos{ 0 };
+	int yPos{ 0 };
+};
+
 struct Room
 {
 	int id{};
@@ -12,6 +20,8 @@ struct Room
 	bool bHasBeenVisited{ false };
 	int itemCount{ 0 };
 	Enemy enemy{};
+	Position position{};
+	std::map<char, int> adjRooms{};
 
 	Room()
 	{
@@ -22,14 +32,6 @@ struct Room
 	Room(RoomType roomType) : Room()
 	{
 		type = roomType;
-	}
-
-	bool operator==(const Room &room) {
-		return id == room.id;
-	}
-
-	bool operator<(const Room &room) const {
-		return id < room.id;
 	}
 };
 

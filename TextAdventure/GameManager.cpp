@@ -9,7 +9,7 @@ void GameManager::constructDungeon()
 	std::cout << "Constructing Dungeon...\n";
 
 	m_dungeonMap = Dungeon{ 20 }; // Update with the random number
-	m_dungeonMap.printMap();
+	//m_dungeonMap.printMap();
 }
 
 void GameManager::intro()
@@ -26,7 +26,7 @@ GameStatus GameManager::gameLoop()
 	while (true)
 	{
 		bool bDidCombatOccur{ false };
-		m_dungeonMap.getAdjacentRooms(m_Player.getCurrentRoom());
+		//m_dungeonMap.getAdjacentRooms(m_Player.getCurrentRoom());
 		std::cout << "Display directions here.\n";
 
 		std::stringstream userInput{};

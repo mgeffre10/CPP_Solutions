@@ -10,22 +10,29 @@ class Dungeon
 {
 private:
 
-	std::map<Room, std::map<char, int>> m_rooms{};
+	std::vector<Room> m_rooms{};
 
 public:
 
 	Dungeon() {}
 	Dungeon(int numOfRooms)
 	{
-		generateRoomTypes(numOfRooms);
-		generateAdjacentRooms();
+		std::vector<Room> tempRoomArray{ generateRoomTypes(numOfRooms) };
+		generateAdjacentRooms(tempRoomArray);
+		generateConnections();
 	}
 
-	void generateRoomTypes(int numOfRooms);
-	void generateAdjacentRooms();
-	std::map<char, int> getAdjacentRooms(int roomId);
-	std::vector<char> getOpenDirections(std::map<char, int> currentRoom, std::map<char, int> adjRoom);
-	std::pair<Room, std::map<char, int>> getRoomById(int roomId);
+	std::vector<Room> generateRoomTypes(int numOfRooms);
+	void generateAdjacentRooms(std::vector<Room> &rooms);
+	void generateConnections();
+	int getAdjRoomCount(const Room &room);
+	char getPotentialDirection(const Room &currentRoom);
+	bool isValidPosition(const Room &room, const std::map<char, int> &neighbors);
+	void propogateNewRoom(int newRoomId, const std::map<char, int> neighbors);
+	std::vector<char> getOpenDirections(const std::map<char, int> &room);
+	std::vector<Room>::iterator getRoomById(int roomId);
+	std::map<char, int> getNeighbors(Position currentRoomPos, char direction);
+	Position determinePosition(Position currentRoomPos, char direction);
 	void printMap();
 };
 
