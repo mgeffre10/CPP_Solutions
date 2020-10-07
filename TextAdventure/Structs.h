@@ -21,7 +21,7 @@ struct Room
 	int itemCount{ 0 };
 	Enemy enemy{};
 	Position position{};
-	std::map<char, int> adjRooms{};
+	std::map<char, int> connectedRooms{};
 
 	Room()
 	{

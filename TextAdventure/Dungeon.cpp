@@ -12,7 +12,6 @@
 
 std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 {
-	std::cout << "Generate room types\n";
 	std::vector<Room> rooms{};
 	int gemShardRoomCount{ 4 };
 	int enemyRoomCount{ static_cast<int>(std::floor(numOfRooms * .4)) };
@@ -24,8 +23,6 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	rooms.push_back(room);
 	++currentIndex;
 
-	std::cout << "Start room populated.\n";
-
 	while (gemShardRoomCount > 0)
 	{
 		Room gemRoom{ RoomType::GemShard };
@@ -33,8 +30,6 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 		--gemShardRoomCount;
 		++currentIndex;
 	}
-
-	std::cout << "Gem Shard rooms populated.\n";
 	
 	while (enemyRoomCount > 0)
 	{
@@ -44,8 +39,6 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 		++currentIndex;
 	}
 
-	std::cout << "Enemy rooms populated.\n";
-
 	while (potionRoomCount > 0)
 	{
 		Room potionRoom{ RoomType::Potion };
@@ -53,8 +46,6 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 		--potionRoomCount;
 		++currentIndex;
 	}
-
-	std::cout << "Potion rooms populated.\n";
 
 	while (currentIndex < numOfRooms - 1)
 	{
@@ -66,159 +57,106 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	Room exitRoom{ RoomType::Exit };
 	rooms.push_back(exitRoom);
 
-	std::cout << "Exit room populated.\n";
-
 	return rooms;
 }
 
 void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 {
-	std::cout << "Generate Adjacent Rooms\n";
-
 	m_rooms.push_back(rooms[0]);
 	rooms.erase(rooms.begin());
 	std::shuffle(rooms.begin(), rooms.end(), Random::mersenne);
-
-	std::cerr << "Rooms: ";
-
-	for (const Room &room : rooms)
-	{
-		std::cerr << room.id << ' ';
-	}
-
-	std::cerr << '\n';
 
 	auto currentRoomIter{ m_rooms.begin() };
 
 	while (static_cast<int>(rooms.size()) > 0 && currentRoomIter != m_rooms.end())
 	{
-		int currentRoomId{ currentRoomIter->id }; // Used later when iterator is invalidated
-		std::cerr << "Current Room in dungeon map: " << currentRoomId << '\n';
+		int currentRoomId{ currentRoomIter->id }; // Used later when iterator is invalidated by inserting room into dungeon
 
 		auto beginIter{ rooms.begin() };
-		int adjRoomCount{ getAdjRoomCount(*beginIter) };
+		int connectionCount{ getConnectionCount(*currentRoomIter) };
 		
-		for (int count{ adjRoomCount }; count > 0; --count)
+		for (int count{ connectionCount }; count > 0; --count)
 		{
 			if (beginIter == rooms.end()) break;
 			auto tempIter{ beginIter };
-			char direction{ getPotentialDirection(*currentRoomIter) };
 
-			if (direction == ' ')
+			char direction{ getPotentialDirection(*currentRoomIter)};
+
+			if (direction == ' ') break;
+			Position newRoomPos{ determinePosition(currentRoomIter->position, direction) };
+
+			auto potentialRoom{ roomAtPosition(newRoomPos) };
+
+			if (potentialRoom != m_rooms.end())
 			{
-				std::cerr << "----------------------------------------Current room no longer has room.\n";
-				break;
+				if (!isValidPosition(*currentRoomIter, *potentialRoom)) continue;
+
+				currentRoomIter->connectedRooms.insert({direction, potentialRoom->id});
+				potentialRoom->connectedRooms.insert({getOppositeDirection(direction), currentRoomIter->id});
 			}
-			std::cerr << "Trying to add room " << tempIter->id << " to room " << currentRoomId << " in the direction " << direction << '\n';
-
-			std::map<char, int> potentialNeighbors{ getNeighbors(currentRoomIter->position, direction) };
-
-			std::cerr << "Potential Neighbors: ";
-			for (const auto neighbor : potentialNeighbors)
+			else
 			{
-				std::cerr << neighbor.second << neighbor.first << ' ';
-			}
+				while (!isValidPosition(*currentRoomIter, *tempIter))
+				{
+					++tempIter;
 
-			std::cerr << '\n';
-			while (!isValidPosition(*tempIter, potentialNeighbors))
-			{
-				++tempIter;
-				if (tempIter == rooms.end()) break;
-				std::cerr << "Invalid room, moving to room " << tempIter->id << '\n';
-			}
+					if (tempIter == rooms.end()) break;
+				}
 
-			if (tempIter != rooms.end())
-			{
-				Room roomToAdd{ *tempIter };
-				roomToAdd.position = determinePosition(currentRoomIter->position, direction);
-				roomToAdd.adjRooms = potentialNeighbors;
-
-				m_rooms.push_back(roomToAdd);
-				currentRoomIter = getRoomById(currentRoomId); // Iterator may have been invalidated
-				std::cerr << "Added room " << roomToAdd.id << " to the dungeon map.\n";
-
-				std::cerr << "Removing room " << tempIter->id << " from remaining rooms.\n";
-				rooms.erase(tempIter);
-				beginIter = rooms.begin(); // Iterator may have been invalidated
-
-				propogateNewRoom(roomToAdd.id, potentialNeighbors);
-
+				if (tempIter != rooms.end())
+				{
+					tempIter->position = newRoomPos;
+					currentRoomIter->connectedRooms.insert({ direction, tempIter->id });
+					tempIter->connectedRooms.insert({ getOppositeDirection(direction), currentRoomIter->id });
+					m_rooms.push_back(*tempIter);
+					currentRoomIter = getRoomById(currentRoomId);
+					if (tempIter == beginIter) beginIter = rooms.erase(tempIter);
+					else rooms.erase(tempIter);
+				}
 			}
 		}
+
 		++currentRoomIter;
-		std::cerr << "Moved to next room in dungeon map.\n";
-		if (currentRoomIter == m_rooms.end()) std::cerr << "Reached end of dungeon map.\n";
-	}
-
-	printMap();
-}
-
-void Dungeon::generateConnections()
-{
-	for (auto roomIter{ m_rooms.begin() }; roomIter != m_rooms.end(); ++roomIter)
-	{
-		int adjRoomCount{ static_cast<int>(roomIter->adjRooms.size()) }; // 4
-		std::cerr << "Adjacent Room Count: " << adjRoomCount << '\n';
-		int connectionCount{ Random::getRandomNumberInRange(2, adjRoomCount) }; // 4
-		int currentRoomId{ roomIter->id };
-
-		std::cerr << "Removing " << adjRoomCount - connectionCount << " rooms from room " << currentRoomId << '\n';
-
-		for (int i{ adjRoomCount }; i > connectionCount; --i)
+		if (currentRoomIter == m_rooms.end() && rooms.size() > 0)
 		{
-			std::cerr << "Trying to remove room.\n";
-			// Get first adjacent room
-			auto firstAdjacentRoomInCurrentRoom{ roomIter->adjRooms.begin() };
-			// Get room object of adjacent room id
-			int adjRoomId{ firstAdjacentRoomInCurrentRoom->second };
-			std::cerr << "Room trying to remove: " << adjRoomId << '\n';
-			auto firstAdjacentRoomInCurrentRoomObject{ getRoomById(adjRoomId) };
+			std::cerr << "Reached end of dungeon map while still needing to add rooms.\n";
+
+			int roomCount{ 1 };
+			auto roomIter{ std::find_if(m_rooms.begin(), m_rooms.end(), [roomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= roomCount; }) };
 			
-
-			auto tempIter{ firstAdjacentRoomInCurrentRoom };
-			std::cerr << "Checking if we can remove room " << adjRoomId << '\n';
-			while (static_cast<int>(firstAdjacentRoomInCurrentRoomObject->adjRooms.size()) <= 2)
+			while (roomIter == m_rooms.end())
 			{
-				std::cerr << "Adjacent room will no longer have any connections, moving to next adjacent room.\n";
-				++tempIter;
-
-				if (tempIter == roomIter->adjRooms.end()) break;
-				adjRoomId = tempIter->second;
-				firstAdjacentRoomInCurrentRoomObject = getRoomById(adjRoomId);
+				++roomCount;
+				if (roomCount == 4) break;
+				roomIter = std::find_if(m_rooms.begin(), m_rooms.end(), [roomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= roomCount; });
 			}
-			std::cerr << "Adjacent room is valid or tempIter is at end.\n";
-			if (tempIter == roomIter->adjRooms.end()) break;
+			
+			if (roomIter == m_rooms.end())
+			{
+				std::cerr << "Unable to add all rooms, exiting.\n";
+				return;
+			}
 
-			std::cerr << "Deleting room " << adjRoomId << " from room " << currentRoomId << " and vice versa.\n";
-			auto currentRoom{ std::find_if(firstAdjacentRoomInCurrentRoomObject->adjRooms.begin(), firstAdjacentRoomInCurrentRoomObject->adjRooms.end(), [currentRoomId](auto pair) {return currentRoomId == pair.second; }) };
-			if (currentRoom != firstAdjacentRoomInCurrentRoomObject->adjRooms.end()) firstAdjacentRoomInCurrentRoomObject->adjRooms.erase(currentRoom);
-			roomIter->adjRooms.erase(tempIter);
-
+			currentRoomIter = roomIter;
 		}
 	}
 
 	printMap();
 }
 
-int Dungeon::getAdjRoomCount(const Room &room)
+int Dungeon::getConnectionCount(const Room &room)
 {
-	int currentAdjRooms{ static_cast<int>(room.adjRooms.size()) };
-	
-	int randNumber{ Random::getRandomNumberInRange(0, 100) };
+	if (room.type == RoomType::Start) return 3;
 
+	int connectionCount{ static_cast<int>(room.connectedRooms.size()) };
+	if (connectionCount > 3) return 0;
 
-	if (randNumber > 90 && currentAdjRooms == 0) return 3;
-	else if (randNumber > 80 && currentAdjRooms < 2) return 2;
-	
-	if (currentAdjRooms < 3) return 1;
-
-	// based on random number and adj room count, return appropriate value
-	return 0;
+	return Random::getRandomNumberInRange(1, 2);
 }
 
 char Dungeon::getPotentialDirection(const Room &currentRoom)
 {
-	std::vector<char> openDirections{ getOpenDirections(currentRoom.adjRooms) };
+	std::vector<char> openDirections{ getOpenDirections(currentRoom.connectedRooms) };
 
 	if (openDirections.size() == 0) return ' ';
 	
@@ -226,49 +164,19 @@ char Dungeon::getPotentialDirection(const Room &currentRoom)
 	else return openDirections[Random::getRandomNumberInRange(0, static_cast<int>(openDirections.size()) - 1)];
 }
 
-bool Dungeon::isValidPosition(const Room &room, const std::map<char, int> &neighbors)
+bool Dungeon::isValidPosition(const Room &currentRoom, const Room &adjRoom)
 {
-	for (const auto neighbor : neighbors)
-	{
-		auto neighborRoomIter{ getRoomById(neighbor.second) };
-		if (room.type != RoomType::Empty && room.type == neighborRoomIter->type
-			|| room.type == RoomType::Exit && neighborRoomIter->type == RoomType::Start
-			|| neighborRoomIter->type == RoomType::Exit && static_cast<int>(neighborRoomIter->adjRooms.size()) == 3) return false;
-	}
-
+	if (currentRoom.type == RoomType::Start && adjRoom.type == RoomType::Exit) return false;
+	else if (currentRoom.type == RoomType::Exit && adjRoom.type == RoomType::Start) return false;
+	else if (adjRoom.type == RoomType::Exit && static_cast<int>(adjRoom.connectedRooms.size()) == 3) return false;
+	else if (currentRoom.type != RoomType::Empty && currentRoom.type == adjRoom.type) return false;
+	
 	return true;
 }
 
-void Dungeon::propogateNewRoom(int newRoomId, const std::map<char, int> neighbors)
+std::vector<Room>::iterator Dungeon::roomAtPosition(Position position)
 {
-	for (const auto neighbor : neighbors)
-	{
-		auto neighborIter{ getRoomById(neighbor.second) };
-
-		if (neighborIter != m_rooms.end())
-		{
-			char direction{};
-			switch (neighbor.first)
-			{
-			case 'N':
-				direction = 'S';
-				break;
-			case 'S':
-				direction = 'N';
-				break;
-			case 'E':
-				direction = 'W';
-				break;
-			case 'W':
-				direction = 'E';
-				break;
-			default: return;
-			}
-
-			std::cerr << "Adding room " << newRoomId << " to room " << neighborIter->id << " in the direction " << direction << '\n';
-			neighborIter->adjRooms.insert({ direction, newRoomId });
-		}
-	}
+	return std::find_if(m_rooms.begin(), m_rooms.end(), [position](const Room &room) {return room.position.xPos == position.xPos && room.position.yPos == position.yPos; });
 }
 
 std::vector<Room>::iterator Dungeon::getRoomById(int roomId)
@@ -276,31 +184,16 @@ std::vector<Room>::iterator Dungeon::getRoomById(int roomId)
 	return std::find_if(m_rooms.begin(), m_rooms.end(), [roomId](const Room &room) {return room.id == roomId; });
 }
 
-std::map<char, int> Dungeon::getNeighbors(Position currentRoomPos, char roomToAddDirection)
+char Dungeon::getOppositeDirection(char direction)
 {
-	std::map<char, int> neighbors{};
-
-	Position roomToAddPos{ determinePosition(currentRoomPos, roomToAddDirection) };
-
-	Position northOfRoom{ roomToAddPos.xPos, roomToAddPos.yPos + 1 };
-	Position southOfRoom{ roomToAddPos.xPos, roomToAddPos.yPos - 1 };
-	Position eastOfRoom{ roomToAddPos.xPos + 1, roomToAddPos.yPos };
-	Position westOfRoom{ roomToAddPos.xPos - 1, roomToAddPos.yPos };
-
-	auto roomIter{ std::find_if(m_rooms.begin(), m_rooms.end(), [northOfRoom](auto pair) { return (northOfRoom.xPos == pair.position.xPos) && (northOfRoom.yPos == pair.position.yPos); }) };
-	if (roomIter != m_rooms.end()) neighbors.insert({'N', roomIter->id});
-
-	roomIter = std::find_if(m_rooms.begin(), m_rooms.end(), [southOfRoom](auto pair) { return (southOfRoom.xPos == pair.position.xPos) && (southOfRoom.yPos == pair.position.yPos); });
-	if (roomIter != m_rooms.end()) neighbors.insert({ 'S', roomIter->id });
-
-
-	roomIter = std::find_if(m_rooms.begin(), m_rooms.end(), [eastOfRoom](auto pair) { return (eastOfRoom.xPos == pair.position.xPos) && (eastOfRoom.yPos == pair.position.yPos); });
-	if (roomIter != m_rooms.end()) neighbors.insert({ 'E', roomIter->id });
-
-	roomIter = std::find_if(m_rooms.begin(), m_rooms.end(), [westOfRoom](auto pair) { return (westOfRoom.xPos == pair.position.xPos) && (westOfRoom.yPos == pair.position.yPos); });
-	if (roomIter != m_rooms.end()) neighbors.insert({ 'W', roomIter->id });
-
-	return neighbors;
+	switch (direction)
+	{
+		case 'N': return 'S';
+		case 'S': return 'N';
+		case 'E': return 'W';
+		case 'W': return 'E';
+		default: return ' ';
+	}
 }
 
 Position Dungeon::determinePosition(Position currentRoomPos, char direction)
@@ -361,7 +254,7 @@ void Dungeon::printMap()
 		std::cout << "Room Type: " << Enums::printRoomType(entry.type) << '\n';
 		std::cout << "Adjacent Rooms: ";
 
-		for (const auto &room : entry.adjRooms)
+		for (const auto &room : entry.connectedRooms)
 		{
 			std::cout << room.second << room.first << ' ';
 		}

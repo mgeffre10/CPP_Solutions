@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "Random.h"
 
 #include <algorithm>
 #include <iostream>
@@ -8,7 +9,7 @@ void GameManager::constructDungeon()
 {
 	std::cout << "Constructing Dungeon...\n";
 
-	m_dungeonMap = Dungeon{ 20 }; // Update with the random number
+	m_dungeonMap = Dungeon{ Random::getRandomNumberInRange(20, 40) }; // Update with the random number
 	//m_dungeonMap.printMap();
 }
 

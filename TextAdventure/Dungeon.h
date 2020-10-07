@@ -19,19 +19,17 @@ public:
 	{
 		std::vector<Room> tempRoomArray{ generateRoomTypes(numOfRooms) };
 		generateAdjacentRooms(tempRoomArray);
-		generateConnections();
 	}
 
 	std::vector<Room> generateRoomTypes(int numOfRooms);
 	void generateAdjacentRooms(std::vector<Room> &rooms);
-	void generateConnections();
-	int getAdjRoomCount(const Room &room);
+	int getConnectionCount(const Room &room);
 	char getPotentialDirection(const Room &currentRoom);
-	bool isValidPosition(const Room &room, const std::map<char, int> &neighbors);
-	void propogateNewRoom(int newRoomId, const std::map<char, int> neighbors);
+	bool isValidPosition(const Room &currentRoom, const Room &adjRoom);
 	std::vector<char> getOpenDirections(const std::map<char, int> &room);
+	std::vector<Room>::iterator roomAtPosition(Position position);
 	std::vector<Room>::iterator getRoomById(int roomId);
-	std::map<char, int> getNeighbors(Position currentRoomPos, char direction);
+	char getOppositeDirection(char direction);
 	Position determinePosition(Position currentRoomPos, char direction);
 	void printMap();
 };
