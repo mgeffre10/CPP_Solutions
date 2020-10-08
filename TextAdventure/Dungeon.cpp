@@ -1,6 +1,7 @@
 #include "Dungeon.h"
 #include "Enums.h"
 #include "Random.h"
+#include "Spider.h"
 #include "Structs.h"
 
 #include <cmath>
@@ -34,6 +35,7 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	while (enemyRoomCount > 0)
 	{
 		Room enemyRoom{ RoomType::Enemy };
+		enemyRoom.enemy = Spider(static_cast<Size>(Random::getRandomNumberInRange(0, 1))); // Small or Large spider
 		rooms.push_back(enemyRoom);
 		--enemyRoomCount;
 		++currentIndex;
