@@ -5,6 +5,11 @@
 #include <iostream>
 #include <sstream>
 
+std::map<std::string, std::string> GameManager::m_commandList = {
+	{"-status", "Prints the player's health and inventory."},
+	{"-heal", "If player has a potion in their inventory and is not full health, consumes potion for +40 health."}
+};
+
 void GameManager::constructDungeon()
 {
 	m_dungeonMap = Dungeon{ Random::getRandomNumberInRange(20, 40) };
@@ -48,6 +53,15 @@ GameStatus GameManager::gameLoop()
 				userInput.str(std::string());
 				userInput.clear();
 			}
+			else if (userInput.str()[0] == '-')
+			{
+				if (m_commandList.find(userInput.str()) == m_commandList.end())
+				{
+					std::cout << "Invalid command, please try again or type '-help' to view list of commands.\n";
+					userInput.str(std::string());
+					userInput.clear();
+				}
+			}
 		}
 
 		std::string input{ userInput.str() };
@@ -89,6 +103,7 @@ GameStatus GameManager::gameLoop()
 		}
 		else
 		{
+			std::cout << "Command entered: " << input << '\n';
 			executeCommand(input);
 		}
 
@@ -178,6 +193,11 @@ std::string GameManager::parseInput(const std::string &input)
 void GameManager::executeCommand(const std::string_view &command)
 {
 	std::cout << "Executing command: " << command << '\n';
+
+	if (command == "-status")
+	{
+		m_Player.printStatus();
+	}
 }
 
 void GameManager::printCommandList()

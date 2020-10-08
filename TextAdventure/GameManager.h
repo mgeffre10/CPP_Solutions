@@ -19,7 +19,7 @@ class GameManager
 private:
 	Player m_Player{};
 	Dungeon m_dungeonMap{};
-	static std::map<std::string_view, std::string_view> m_commandList;
+	static std::map<std::string, std::string> m_commandList;
 
 public:
 
