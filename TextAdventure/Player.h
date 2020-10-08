@@ -16,7 +16,7 @@ private:
 	int m_maxHealth;
 	int m_minDamageRange;
 	int m_maxDamageRange;
-	std::map<std::string_view, int> m_inventory;
+	std::map<std::string, int> m_inventory;
 	int m_previousRoom;
 	int m_currentRoom;
 
@@ -35,13 +35,12 @@ public:
 	bool isFullHealth();
 	void heal(int value);
 	void takeDamage(int value);
-	void move(char direction);
+	void move(char direction, int destinationId);
 	void moveBack();
 	int calculateDamage();
 	int getCurrentRoom();
 	int getHealth();
 	int getMaxHealth();
-	void pickUpItem(RoomType roomType);
 	void addItem(std::string_view key);
 	int findItem(std::string_view key);
 	void removeItem(std::string_view key);

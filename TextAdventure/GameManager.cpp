@@ -7,10 +7,7 @@
 
 void GameManager::constructDungeon()
 {
-	std::cout << "Constructing Dungeon...\n";
-
-	m_dungeonMap = Dungeon{ Random::getRandomNumberInRange(20, 40) }; // Update with the random number
-	//m_dungeonMap.printMap();
+	m_dungeonMap = Dungeon{ Random::getRandomNumberInRange(20, 40) };
 }
 
 void GameManager::intro()
@@ -20,8 +17,6 @@ void GameManager::intro()
 
 GameStatus GameManager::gameLoop()
 {
-	std::cout << "Starting gameLoop.\n";
-
 	CombatStatus combatStatus{};
 
 	while (true)
@@ -137,11 +132,6 @@ std::string GameManager::parseInput(const std::string &input)
 	}
 
 	std::cout << "Invalid input, please try again.\n";
-	return "";
-}
-
-std::string_view printRoomType(const RoomType type)
-{
 	return "";
 }
 

@@ -21,7 +21,6 @@ void Player::takeDamage(int value)
 
 void Player::move(char direction)
 {
-	std::cout << "Move character in the direction of " << direction << '\n';
 }
 
 void Player::moveBack()
@@ -37,7 +36,6 @@ int Player::calculateDamage()
 
 int Player::getCurrentRoom()
 {
-	std::cout << "Get Current Room.\n";
 	return m_currentRoom;
 }
 int Player::getHealth()
@@ -48,14 +46,20 @@ int Player::getMaxHealth()
 {
 	return m_maxHealth;
 }
-void Player::pickUpItem(RoomType roomType)
-{
-	std::cout << "Picking up item: " << static_cast<int>(roomType) << '\n';
-}
 
 void Player::addItem(std::string_view key)
 {
 	std::cout << "Adding item: " << key << '\n';
+
+	auto item{ findItem(key) };
+	if (item != m_inventory.end())
+	{
+		++(item->second);
+	}
+	else
+	{
+		m_inventory.insert({ std::string(key), 1 });
+	}
 }
 
 int Player::findItem(std::string_view key)
