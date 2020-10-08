@@ -18,7 +18,6 @@ struct Room
 	int id{};
 	RoomType type{ RoomType::Empty };
 	bool bHasBeenVisited{ false };
-	int itemCount{ 0 };
 	Enemy enemy{};
 	Position position{};
 	std::map<char, int> connectedRooms{};
