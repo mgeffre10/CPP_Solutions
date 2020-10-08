@@ -103,7 +103,6 @@ GameStatus GameManager::gameLoop()
 		}
 		else
 		{
-			std::cout << "Command entered: " << input << '\n';
 			executeCommand(input);
 		}
 

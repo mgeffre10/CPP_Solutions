@@ -4,20 +4,23 @@
 #include <iostream>
 #include <map>
 
-bool Player::isFullHealth()
-{
-	std::cout << "isFullHealth()\n";
-	return true;
-}
+int Player::getCurrentRoom() { return m_currentRoom; }
+int Player::getHealth() { return m_health; }
+int Player::getMaxHealth() { return m_maxHealth; }
+bool Player::isFullHealth() { return getHealth() == getMaxHealth(); }
 
 void Player::heal(int value)
 {
-	std::cout << "Heal for " << value << '\n';
+	int newHealth{ m_health + value };
+
+	newHealth > getMaxHealth() ? m_health = m_maxHealth : m_health = newHealth;
 }
 
 void Player::takeDamage(int value)
 {
-	std::cout << "Player take damage for " << value << '\n';
+	int newHealth{ m_health - value };
+
+	newHealth < 0 ? m_health = 0 : m_health = newHealth;
 }
 
 void Player::move(char direction, int destinationId)
@@ -28,7 +31,8 @@ void Player::move(char direction, int destinationId)
 
 void Player::moveBack()
 {
-	std::cout << "Move player back.\n";
+	m_currentRoom = m_previousRoom;
+	m_previousRoom = 0;
 }
 
 int Player::calculateDamage()
@@ -37,23 +41,8 @@ int Player::calculateDamage()
 	return 10;
 }
 
-int Player::getCurrentRoom()
-{
-	return m_currentRoom;
-}
-int Player::getHealth()
-{
-	return m_health;
-}
-int Player::getMaxHealth()
-{
-	return m_maxHealth;
-}
-
 void Player::addItem(std::string_view key)
 {
-	std::cout << "Adding item: " << key << '\n';
-
 	auto item{ findItem(key) };
 	if (item != m_inventory.end())
 	{
@@ -65,28 +54,24 @@ void Player::addItem(std::string_view key)
 	}
 }
 
-std::map<std::string, int>::iterator Player::findItem(std::string_view key)
-{
-	std::cout << "Finding item: " << key << '\n';
-	return m_inventory.find(std::string(key));
-}
+std::map<std::string, int>::iterator Player::findItem(std::string_view key) { return m_inventory.find(std::string(key)); }
+int Player::getItemCount(std::string_view key) { return findItem(key) == m_inventory.end() ? 0 : findItem(key)->second; }
 
-int Player::getItemCount(std::string_view key)
-{
-	if (findItem(key) == m_inventory.end()) return 0;
-	return findItem(key)->second;
-}
 void Player::removeItem(std::string_view key)
 {
 	std::cout << "Removing item: " << key << '\n';
 }
 void Player::printInventory()
 {
-	std::cout << "Printing inventory.\n";
+	std::cout << "Your inventory: \n";
+	for (const auto item : m_inventory)
+	{
+		std::cout << item.first << ": " << item.second << '\n';
+	}
 }
 
 void Player::printStatus()
 {
-	std::cout << "Printing player status\n";
+	std::cout << "Your health: " << getHealth() << " / " << getMaxHealth() << '\n';
 	printInventory();
 }
