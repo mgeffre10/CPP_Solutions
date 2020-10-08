@@ -42,7 +42,8 @@ public:
 	int getHealth();
 	int getMaxHealth();
 	void addItem(std::string_view key);
-	int findItem(std::string_view key);
+	std::map<std::string, int>::iterator findItem(std::string_view key);
+	int getItemCount(std::string_view key);
 	void removeItem(std::string_view key);
 	void printInventory();
 	void printStatus();

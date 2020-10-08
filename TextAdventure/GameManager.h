@@ -26,10 +26,9 @@ public:
 	void constructDungeon();
 	void intro();
 	GameStatus gameLoop();
-	void determineResponseToMovement(const RoomType type);
+	void determineResponseToMovement(int roomId, RoomType roomType);
 	CombatStatus combatLoop(Enemy &enemy);
 	std::string parseInput(const std::string &input);
-	void printRoomType(const RoomType type);
 	void executeCommand(const std::string_view &command);
 	void printCommandList();
 	void outro(const GameStatus &gameStatus);

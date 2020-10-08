@@ -56,8 +56,36 @@ GameStatus GameManager::gameLoop()
 
 		if (connectedRooms.find(input[0]) != connectedRooms.end()) // update to look at valid directions
 		{
-			m_Player.move(input[0]);
-			determineEnteredRoom(m_Player.getCurrentRoom());
+			m_Player.move(input[0], connectedRooms.find(input[0])->second);
+
+			auto roomIter{ m_dungeonMap.getRoomById(m_Player.getCurrentRoom()) };
+
+			determineResponseToMovement(roomIter->id, roomIter->type);
+
+			if (roomIter->type == RoomType::Enemy)
+			{
+				bDidCombatOccur = true;
+				combatStatus = combatLoop(roomIter->enemy);
+			}
+			else if (roomIter->type == RoomType::Exit)
+			{
+				if (m_Player.getItemCount(Enums::printRoomType(roomIter->type)) == 4)
+				{
+					std::cout << "You escaped the dungeon!\n";
+					return GameStatus::PlayerExited;
+				}
+				else
+				{
+					if (roomIter->bHasBeenVisited)
+					{
+						std::cout << "You still need some gem shards to exit the dungeon.\n";
+					}
+					else
+					{
+						std::cout << "You see an indentation of a circle with 4 distinct slots.\n";
+					}
+				}
+			}
 		}
 		else
 		{
@@ -74,20 +102,32 @@ GameStatus GameManager::gameLoop()
 	return GameStatus::PlayerExited;
 }
 
-void GameManager::determineResponseToMovement(const RoomType type)
+void GameManager::determineResponseToMovement(int roomId, RoomType roomType)
 {
-	auto roomIter{ m_dungeonMap.getRoomById(m_Player.getCurrentRoom()) };
+	std::cout << "You have entered room " << roomId << ".\n";
 
-	std::cout << "Room entered: " << roomIter->id << ", Type: " << roomIter->type << '\n';
-
-	switch (type)
+	switch (roomType)
 	{
 		case RoomType::Empty: 
-			std::cout << "Empty Room entered.\n";
+			std::cout << "You see nothing interesting in this room.\n";
 			return;
-		case RoomType::Enemy: 
-			std::cout << "Enemy Room entered.\n";
+		case RoomType::Exit:				// Response handled in gameLoop
+		case RoomType::Enemy: return;		// Response handled in gameLoop
+		case RoomType::Potion:
+		case RoomType::GemShard:
+			std::cout << "You find a " << Enums::printRoomType(roomType) << " and pick it up!\n";
+			m_Player.addItem(Enums::printRoomType(roomType));
+			m_dungeonMap.getRoomById(roomId)->type = RoomType::Empty;
+			return;
+		case RoomType::Start:
+			std::cout << "You seem to be back where you started!\n";
+			return;
+		default: 
+			std::cout << "Invalid Room entered.\n";
+			return;
 	}
+
+	return;
 }
 
 CombatStatus GameManager::combatLoop(Enemy &enemy)

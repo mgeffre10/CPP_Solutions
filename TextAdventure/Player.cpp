@@ -2,6 +2,7 @@
 #include "Structs.h"
 
 #include <iostream>
+#include <map>
 
 bool Player::isFullHealth()
 {
@@ -19,8 +20,10 @@ void Player::takeDamage(int value)
 	std::cout << "Player take damage for " << value << '\n';
 }
 
-void Player::move(char direction)
+void Player::move(char direction, int destinationId)
 {
+	m_previousRoom = m_currentRoom;
+	m_currentRoom = destinationId;
 }
 
 void Player::moveBack()
@@ -62,12 +65,17 @@ void Player::addItem(std::string_view key)
 	}
 }
 
-int Player::findItem(std::string_view key)
+std::map<std::string, int>::iterator Player::findItem(std::string_view key)
 {
 	std::cout << "Finding item: " << key << '\n';
-	return 0;
+	return m_inventory.find(std::string(key));
 }
 
+int Player::getItemCount(std::string_view key)
+{
+	if (findItem(key) == m_inventory.end()) return 0;
+	return findItem(key)->second;
+}
 void Player::removeItem(std::string_view key)
 {
 	std::cout << "Removing item: " << key << '\n';
