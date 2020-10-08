@@ -23,6 +23,7 @@ public:
 
 	std::vector<Room> generateRoomTypes(int numOfRooms);
 	void generateAdjacentRooms(std::vector<Room> &rooms);
+	void createRooms(int count, RoomType type, int &currentIndex, std::vector<Room> &rooms);
 	int getConnectionCount(const Room &room);
 	char getPotentialDirection(const Room &currentRoom);
 	bool isValidPosition(const Room &currentRoom, const Room &adjRoom);

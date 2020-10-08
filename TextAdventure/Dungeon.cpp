@@ -24,30 +24,9 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	rooms.push_back(room);
 	++currentIndex;
 
-	while (gemShardRoomCount > 0)
-	{
-		Room gemRoom{ RoomType::GemShard };
-		rooms.push_back(gemRoom);
-		--gemShardRoomCount;
-		++currentIndex;
-	}
-	
-	while (enemyRoomCount > 0)
-	{
-		Room enemyRoom{ RoomType::Enemy };
-		enemyRoom.enemy = Spider(static_cast<Size>(Random::getRandomNumberInRange(0, 1))); // Small or Large spider
-		rooms.push_back(enemyRoom);
-		--enemyRoomCount;
-		++currentIndex;
-	}
-
-	while (potionRoomCount > 0)
-	{
-		Room potionRoom{ RoomType::Potion };
-		rooms.push_back(potionRoom);
-		--potionRoomCount;
-		++currentIndex;
-	}
+	createRooms(gemShardRoomCount, RoomType::GemShard, currentIndex, rooms);
+	createRooms(enemyRoomCount, RoomType::Enemy, currentIndex, rooms);
+	createRooms(potionRoomCount, RoomType::Potion, currentIndex, rooms);
 
 	while (currentIndex < numOfRooms - 1)
 	{
@@ -60,6 +39,23 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	rooms.push_back(exitRoom);
 
 	return rooms;
+}
+
+void Dungeon::createRooms(int count, RoomType type, int &currentIndex, std::vector<Room> &rooms)
+{
+	while (count > 0)
+	{
+		Room room{ type };
+
+		if (type == RoomType::Enemy)
+		{
+			room.enemy = Spider(static_cast<Size>(Random::getRandomNumberInRange(0, 1)));
+		}
+
+		rooms.push_back(room);
+		--count;
+		++currentIndex;
+	}
 }
 
 void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
