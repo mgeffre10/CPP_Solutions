@@ -242,6 +242,11 @@ std::vector<char> Dungeon::getOpenDirections(const std::map<char, int> &room)
 	return openDirections;
 }
 
+std::map<char, int> Dungeon::getConnectedRooms(int currentRoomId)
+{
+	return getRoomById(currentRoomId)->connectedRooms;
+}
+
 void Dungeon::printMap()
 {
 	std::cout << "Printing map\n";

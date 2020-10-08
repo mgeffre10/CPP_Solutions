@@ -31,6 +31,7 @@ public:
 	std::vector<Room>::iterator roomAtPosition(Position position);
 	std::vector<Room>::iterator getRoomById(int roomId);
 	char getOppositeDirection(char direction);
+	std::map<char, int> getConnectedRooms(int currentRoomId);
 	Position determinePosition(Position currentRoomPos, char direction);
 	void printMap();
 };
