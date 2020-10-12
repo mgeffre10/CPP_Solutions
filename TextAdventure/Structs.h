@@ -11,6 +11,11 @@ struct Position
 {
 	int xPos{ 0 };
 	int yPos{ 0 };
+
+	bool operator==(const Position &pos) const
+	{
+		return (xPos == pos.xPos && yPos == pos.yPos);
+	}
 };
 
 struct Room

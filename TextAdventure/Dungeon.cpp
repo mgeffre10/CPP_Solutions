@@ -174,7 +174,7 @@ bool Dungeon::isValidPosition(const Room &currentRoom, const Room &adjRoom)
 
 std::vector<Room>::iterator Dungeon::roomAtPosition(Position position)
 {
-	return std::find_if(m_rooms.begin(), m_rooms.end(), [position](const Room &room) {return room.position.xPos == position.xPos && room.position.yPos == position.yPos; });
+	return std::find_if(m_rooms.begin(), m_rooms.end(), [position](const Room &room) { return room.position == position; });
 }
 
 std::vector<Room>::iterator Dungeon::getRoomById(int roomId)
