@@ -182,7 +182,7 @@ std::vector<Room>::iterator Dungeon::getRoomById(int roomId)
 	return std::find_if(m_rooms.begin(), m_rooms.end(), [roomId](const Room &room) {return room.id == roomId; });
 }
 
-char Dungeon::getOppositeDirection(char direction)
+char Dungeon::getOppositeDirection(char direction) const
 {
 	switch (direction)
 	{

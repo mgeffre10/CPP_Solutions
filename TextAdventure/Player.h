@@ -32,9 +32,9 @@ public:
 		m_currentRoom{ 1 }
 	{}
 
-	bool isFullHealth() { return m_health == m_maxHealth; };
-	int getHealth() { return m_health; };
-	int getMaxHealth() { return m_maxHealth; };
+	bool isFullHealth() const { return m_health == m_maxHealth; };
+	int getHealth() const { return m_health; };
+	int getMaxHealth() const { return m_maxHealth; };
 	void restoreHealth() { m_health = m_maxHealth; };
 	void heal(int value);
 
@@ -42,7 +42,7 @@ public:
 	int calculateDamage();
 	
 	void goBackToStart() { m_currentRoom = 1; };
-	int getCurrentRoom() { return m_currentRoom; };
+	int getCurrentRoom() const { return m_currentRoom; };
 	void move(char direction, int destinationId);
 	void moveBack();
 	

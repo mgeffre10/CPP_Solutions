@@ -36,7 +36,7 @@ public:
 	}
 
 	void printEntryDescription() override;
-	Size getSize() { return m_size; }
+	Size getSize() const { return m_size; }
 };
 
 #endif

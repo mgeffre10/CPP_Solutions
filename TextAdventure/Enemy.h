@@ -19,8 +19,8 @@ protected:
 	void setMaxDamageRange(int maxDamageRange) { m_maxDamageRange = maxDamageRange; };
 public:
 
-	int getHealth() { return m_health; };
-	int getMaxHealth() { return m_maxHealth; };
+	int getHealth() const { return m_health; };
+	int getMaxHealth() const { return m_maxHealth; };
 	int calculateDamage();
 	void takeDamage(int value);
 	

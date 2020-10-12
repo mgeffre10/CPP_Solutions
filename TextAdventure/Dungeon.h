@@ -28,7 +28,7 @@ public:
 	char getPotentialDirection(const Room &currentRoom);
 	std::vector<Room>::iterator getRoomById(int roomId);
 	std::vector<char> getOpenDirections(const std::map<char, int> &room);
-	char getOppositeDirection(char direction);
+	char getOppositeDirection(char direction) const;
 	std::map<char, int> getConnectedRooms(int currentRoomId);
 
 	bool isValidPosition(const Room &currentRoom, const Room &adjRoom);
