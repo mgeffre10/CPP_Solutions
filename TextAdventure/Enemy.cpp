@@ -1,42 +1,25 @@
 #include "Enemy.h"
+#include "Random.h"
 
 #include <iostream>
-void Enemy::setHealth(int health)
-{
-	m_health = health;
-}
 
-void Enemy::setMaxHealth(int health)
-{
-	m_maxHealth = health;
-}
-
-void Enemy::setMinDamageRange(int minDamageRange)
-{
-	m_minDamageRange = minDamageRange;
-}
-
-void Enemy::setMaxDamageRange(int maxDamageRange)
-{
-	m_maxDamageRange = maxDamageRange;
-}
-
-int Enemy::getHealth()
-{
-	return m_health;
-}
 int Enemy::calculateDamage()
 {
-	std::cout << "Enemy calculate Damage and Crit chance\n";
-	return 10;
+	int critChance{ Random::getRandomNumberInRange(0, 100) };
+	int damage{ Random::getRandomNumberInRange(m_minDamageRange, m_maxDamageRange) };
+
+	if (critChance > 70)
+	{
+		std::cout << "Critical hit!\n";
+		return damage * 2;
+	}
+
+	return damage;
 }
 
 void Enemy::takeDamage(int value)
 {
-	std::cout << "Enemy taking damage of " << value << '\n';
-}
+	int newHealth{ m_health - value };
 
-void Enemy::printEntryDescription()
-{
-	std::cout << "Enemy description\n";
+	newHealth < 0 ? m_health = 0 : m_health = newHealth;
 }

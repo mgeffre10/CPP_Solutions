@@ -9,11 +9,24 @@
 
 int main()
 {
-	std::cout << "Inside main, starting Function flow.\n";
 	GameManager manager{};
-	manager.constructDungeon();
-	manager.intro();
-	GameStatus gameStatus{ manager.gameLoop() };
-	manager.outro(gameStatus);
-	std::cout << "Finished Function flow, game is over.\n";
+	bool playAgain{ true };
+	while (playAgain)
+	{
+		manager.constructDungeon();
+		manager.intro();
+		GameStatus gameStatus{ GameStatus::PlayerDied };
+		while (gameStatus == GameStatus::PlayerDied)
+		{
+			gameStatus = manager.gameLoop();
+			manager.outro(gameStatus);
+		}
+
+		playAgain = manager.playAgain();
+
+		if (playAgain)
+		{
+			manager.reset();
+		}
+	}
 }

@@ -18,17 +18,14 @@ struct Room
 	int id{};
 	RoomType type{ RoomType::Empty };
 	bool bHasBeenVisited{ false };
-	Enemy enemy{};
+	Enemy* enemy{};
 	Position position{};
 	std::map<char, int> connectedRooms{};
 
-	Room()
-	{
-		static int roomId{ 1 };
-		id = roomId++;
-	}
+	Room(int roomId) : id{ roomId }
+	{ }
 
-	Room(RoomType roomType) : Room()
+	Room(RoomType roomType, int id) : Room(id)
 	{
 		type = roomType;
 	}

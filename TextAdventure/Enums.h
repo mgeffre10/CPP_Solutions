@@ -47,9 +47,9 @@ namespace Enums
 	{
 		switch (size)
 		{
-		case Size::Large: return "Large";
-		case Size::Small: return "Small";
-		default: return "Unknown";
+			case Size::Large: return "Large";
+			case Size::Small: return "Small";
+			default: return "Unknown";
 		}
 	}
 
@@ -57,13 +57,13 @@ namespace Enums
 	{
 		switch (type)
 		{
-		case RoomType::Empty: return "Empty";
-		case RoomType::Enemy: return "Enemy";
-		case RoomType::Exit: return "Exit";
-		case RoomType::GemShard: return "Gem Shard";
-		case RoomType::Potion: return "Potion";
-		case RoomType::Start: return "Start";
-		default: return "Uknown";
+			case RoomType::Empty: return "Empty";
+			case RoomType::Enemy: return "Enemy";
+			case RoomType::Exit: return "Exit";
+			case RoomType::GemShard: return "Gem Shard";
+			case RoomType::Potion: return "Potion";
+			case RoomType::Start: return "Start";
+			default: return "Invalid";
 		}
 	}
 }

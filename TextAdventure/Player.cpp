@@ -1,19 +1,16 @@
 #include "Player.h"
+#include "Random.h"
 #include "Structs.h"
 
 #include <iostream>
 #include <map>
-
-int Player::getCurrentRoom() { return m_currentRoom; }
-int Player::getHealth() { return m_health; }
-int Player::getMaxHealth() { return m_maxHealth; }
-bool Player::isFullHealth() { return getHealth() == getMaxHealth(); }
 
 void Player::heal(int value)
 {
 	int newHealth{ m_health + value };
 
 	newHealth > getMaxHealth() ? m_health = m_maxHealth : m_health = newHealth;
+	removeItem("Potion");
 }
 
 void Player::takeDamage(int value)
@@ -21,6 +18,20 @@ void Player::takeDamage(int value)
 	int newHealth{ m_health - value };
 
 	newHealth < 0 ? m_health = 0 : m_health = newHealth;
+}
+
+int Player::calculateDamage()
+{
+	int critChance{ Random::getRandomNumberInRange(0, 100) };
+	int damage{ Random::getRandomNumberInRange(m_minDamageRange, m_maxDamageRange) };
+
+	if (critChance > 70)
+	{
+		std::cout << "Critical hit!\n";
+		return damage * 2;
+	}
+
+	return damage;
 }
 
 void Player::move(char direction, int destinationId)
@@ -33,12 +44,6 @@ void Player::moveBack()
 {
 	m_currentRoom = m_previousRoom;
 	m_previousRoom = 0;
-}
-
-int Player::calculateDamage()
-{
-	std::cout << "Player calculate Damage and Crit chance\n";
-	return 10;
 }
 
 void Player::addItem(std::string_view key)
@@ -54,24 +59,26 @@ void Player::addItem(std::string_view key)
 	}
 }
 
-std::map<std::string, int>::iterator Player::findItem(std::string_view key) { return m_inventory.find(std::string(key)); }
-int Player::getItemCount(std::string_view key) { return findItem(key) == m_inventory.end() ? 0 : findItem(key)->second; }
-
 void Player::removeItem(std::string_view key)
 {
-	std::cout << "Removing item: " << key << '\n';
+	auto item{ findItem(key) };
+	item->second == 1 ? m_inventory.erase(item->first) : --(item->second);
 }
+
 void Player::printInventory()
 {
-	std::cout << "Your inventory: \n";
+	std::cout << "------------Your inventory--------------\n";
+	if (m_inventory.size() == 0) std::cout << "Empty\n";
+
 	for (const auto item : m_inventory)
 	{
 		std::cout << item.first << ": " << item.second << '\n';
 	}
+	std::cout << "----------------------------------------\n";
 }
 
 void Player::printStatus()
 {
-	std::cout << "Your health: " << getHealth() << " / " << getMaxHealth() << '\n';
+	std::cout << "Your health: " << m_health << " / " << m_maxHealth << '\n';
 	printInventory();
 }

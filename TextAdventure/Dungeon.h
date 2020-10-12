@@ -26,14 +26,17 @@ public:
 	void createRooms(int count, RoomType type, int &currentIndex, std::vector<Room> &rooms);
 	int getConnectionCount(const Room &room);
 	char getPotentialDirection(const Room &currentRoom);
-	bool isValidPosition(const Room &currentRoom, const Room &adjRoom);
-	std::vector<char> getOpenDirections(const std::map<char, int> &room);
-	std::vector<Room>::iterator roomAtPosition(Position position);
 	std::vector<Room>::iterator getRoomById(int roomId);
+	std::vector<char> getOpenDirections(const std::map<char, int> &room);
 	char getOppositeDirection(char direction);
 	std::map<char, int> getConnectedRooms(int currentRoomId);
+
+	bool isValidPosition(const Room &currentRoom, const Room &adjRoom);
 	Position determinePosition(Position currentRoomPos, char direction);
+	std::vector<Room>::iterator roomAtPosition(Position position);
+
 	void printMap();
+	void resetDungeon() { m_rooms.clear(); };
 };
 
 #endif

@@ -2,6 +2,8 @@
 #ifndef TEXTADVENTURE_ENEMY
 #define TEXTADVENTURE_ENEMY
 
+#include <iostream>
+
 class Enemy
 {
 private:
@@ -11,17 +13,18 @@ private:
 	int m_maxDamageRange{};
 
 protected:
-	void setHealth(int health);
-	void setMaxHealth(int health);
-	void setMinDamageRange(int minDamageRange);
-	void setMaxDamageRange(int maxDamageRange);
+	void setHealth(int health) { m_health = health; };
+	void setMaxHealth(int health) { m_maxHealth = health; };
+	void setMinDamageRange(int minDamageRange) { m_minDamageRange = minDamageRange; };
+	void setMaxDamageRange(int maxDamageRange) { m_maxDamageRange = maxDamageRange; };
 public:
 
-	int getHealth();
+	int getHealth() { return m_health; };
+	int getMaxHealth() { return m_maxHealth; };
 	int calculateDamage();
 	void takeDamage(int value);
-	virtual void printEntryDescription();
-
+	
+	virtual void printEntryDescription() { std::cout << "Enemy description\n"; };
 };
 
 #endif

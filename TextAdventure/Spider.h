@@ -17,7 +17,8 @@ public:
 
 	Spider(Size size) : Enemy()
 	{
-		
+		m_size = size;
+
 		if (size == Size::Small)
 		{
 			setHealth(60);
@@ -35,6 +36,7 @@ public:
 	}
 
 	void printEntryDescription() override;
+	Size getSize() { return m_size; }
 };
 
 #endif

@@ -32,19 +32,26 @@ public:
 		m_currentRoom{ 1 }
 	{}
 
-	bool isFullHealth();
+	bool isFullHealth() { return m_health == m_maxHealth; };
+	int getHealth() { return m_health; };
+	int getMaxHealth() { return m_maxHealth; };
+	void restoreHealth() { m_health = m_maxHealth; };
 	void heal(int value);
+
 	void takeDamage(int value);
+	int calculateDamage();
+	
+	void goBackToStart() { m_currentRoom = 1; };
+	int getCurrentRoom() { return m_currentRoom; };
 	void move(char direction, int destinationId);
 	void moveBack();
-	int calculateDamage();
-	int getCurrentRoom();
-	int getHealth();
-	int getMaxHealth();
+	
+	std::map<std::string, int>::iterator findItem(std::string_view key) { return m_inventory.find(std::string(key)); };
+	int getItemCount(std::string_view key) { return findItem(key) == m_inventory.end() ? 0 : findItem(key)->second; };
 	void addItem(std::string_view key);
-	std::map<std::string, int>::iterator findItem(std::string_view key);
-	int getItemCount(std::string_view key);
 	void removeItem(std::string_view key);
+
+	void clearInventory() { m_inventory.clear(); };
 	void printInventory();
 	void printStatus();
 

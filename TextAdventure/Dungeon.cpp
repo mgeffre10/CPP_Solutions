@@ -20,7 +20,8 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 	
 	int currentIndex{ 0 };
 
-	Room room{ RoomType::Start };
+	Room room{ RoomType::Start, currentIndex + 1 };
+	room.bHasBeenVisited = true; // Player starts here
 	rooms.push_back(room);
 	++currentIndex;
 
@@ -30,12 +31,12 @@ std::vector<Room> Dungeon::generateRoomTypes(int numOfRooms)
 
 	while (currentIndex < numOfRooms - 1)
 	{
-		Room emptyRoom{ };
+		Room emptyRoom{ currentIndex + 1 };
 		rooms.push_back(emptyRoom);
 		++currentIndex;
 	}
 
-	Room exitRoom{ RoomType::Exit };
+	Room exitRoom{ RoomType::Exit, currentIndex + 1 };
 	rooms.push_back(exitRoom);
 
 	return rooms;
@@ -45,11 +46,12 @@ void Dungeon::createRooms(int count, RoomType type, int &currentIndex, std::vect
 {
 	while (count > 0)
 	{
-		Room room{ type };
+		Room room{ type, currentIndex + 1 };
 
 		if (type == RoomType::Enemy)
 		{
-			room.enemy = Spider(static_cast<Size>(Random::getRandomNumberInRange(0, 1)));
+			Spider* spider{ new Spider(static_cast<Size>(Random::getRandomNumberInRange(0, 1))) };
+			room.enemy = spider;
 		}
 
 		rooms.push_back(room);
@@ -65,7 +67,8 @@ void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 	std::shuffle(rooms.begin(), rooms.end(), Random::mersenne);
 
 	auto currentRoomIter{ m_rooms.begin() };
-
+	int failureInjectionPoint{ 1 }; // Used if end of map reached but still have rooms to add
+	
 	while (static_cast<int>(rooms.size()) > 0 && currentRoomIter != m_rooms.end())
 	{
 		int currentRoomId{ currentRoomIter->id }; // Used later when iterator is invalidated by inserting room into dungeon
@@ -115,31 +118,28 @@ void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 		}
 
 		++currentRoomIter;
-		if (currentRoomIter == m_rooms.end() && rooms.size() > 0)
+		if (currentRoomIter == m_rooms.end() && rooms.size() > 0) // Restart the process of connecting rooms
 		{
-			std::cerr << "Reached end of dungeon map while still needing to add rooms.\n";
-
-			int roomCount{ 1 };
-			auto roomIter{ std::find_if(m_rooms.begin(), m_rooms.end(), [roomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= roomCount; }) };
+			int connectedRoomCount{ 1 };
+			auto roomIter{ std::find_if(getRoomById(failureInjectionPoint) + 1, m_rooms.end(), [connectedRoomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= connectedRoomCount; }) };
 			
 			while (roomIter == m_rooms.end())
 			{
-				++roomCount;
-				if (roomCount == 4) break;
-				roomIter = std::find_if(m_rooms.begin(), m_rooms.end(), [roomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= roomCount; });
+				++connectedRoomCount;
+				if (connectedRoomCount == 4) break;
+				roomIter = std::find_if(getRoomById(failureInjectionPoint) + 1, m_rooms.end(), [connectedRoomCount](const Room &room) {return static_cast<int>(room.connectedRooms.size()) <= connectedRoomCount; });
 			}
 			
 			if (roomIter == m_rooms.end())
 			{
 				std::cerr << "Unable to add all rooms, exiting.\n";
-				return;
+				exit(0);
 			}
 
 			currentRoomIter = roomIter;
+			failureInjectionPoint = roomIter->id;
 		}
 	}
-
-	printMap();
 }
 
 int Dungeon::getConnectionCount(const Room &room)
