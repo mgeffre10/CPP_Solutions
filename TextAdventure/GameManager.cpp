@@ -85,9 +85,10 @@ GameStatus GameManager::gameLoop()
 		if (connectedRooms.find(input[0]) != connectedRooms.end())
 		{
 			m_player.move(input[0], connectedRooms.find(input[0])->second);
-
+			
 			auto roomIter{ m_dungeonMap.getRoomById(m_player.getCurrentRoom()) };
 			
+			std::cout << "You have entered room " << roomIter->id << ".\n";
 			determineResponseToMovement(roomIter->id, roomIter->type);
 
 			if (roomIter->type == RoomType::Enemy)
@@ -130,7 +131,7 @@ GameStatus GameManager::gameLoop()
 					}
 					else
 					{
-						std::cout << "You see an indentation of a circle with 4 distinct slots.\n";
+						std::cout << "You see an indentation of a circle with 4 distinct slots in the ceiling above you.\n";
 						roomIter->bHasBeenVisited = true;
 					}
 				}
@@ -151,8 +152,6 @@ GameStatus GameManager::gameLoop()
 
 void GameManager::determineResponseToMovement(int roomId, RoomType roomType)
 {
-	std::cout << "You have entered room " << roomId << ".\n";
-
 	switch (roomType)
 	{
 		case RoomType::Empty: 
