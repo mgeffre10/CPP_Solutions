@@ -93,7 +93,7 @@ void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 				if (!isValidPosition(*currentRoomIter, *potentialRoom)) continue;
 
 				currentRoomIter->connectedRooms.insert({direction, potentialRoom->id});
-				potentialRoom->connectedRooms.insert({getOppositeDirection(direction), currentRoomIter->id});
+				potentialRoom->connectedRooms.insert({ getOppositeDirection(direction), currentRoomIter->id });
 			}
 			else
 			{
