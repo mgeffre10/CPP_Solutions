@@ -32,26 +32,27 @@ public:
 		m_currentRoom{ 1 }
 	{}
 
-	bool isFullHealth() const { return m_health == m_maxHealth; };
-	int getHealth() const { return m_health; };
-	int getMaxHealth() const { return m_maxHealth; };
-	void restoreHealth() { m_health = m_maxHealth; };
+	bool isFullHealth() const { return m_health == m_maxHealth; }
+	int getHealth() const { return m_health; }
+	int getMaxHealth() const { return m_maxHealth; }
+	void restoreHealth() { m_health = m_maxHealth; }
 	void heal(int value);
 
 	void takeDamage(int value);
 	int calculateDamage();
 	
-	void goBackToStart() { m_currentRoom = 1; };
-	int getCurrentRoom() const { return m_currentRoom; };
+	void goBackToStart() { m_currentRoom = 1; }
+	int getCurrentRoom() const { return m_currentRoom; }
 	void move(char direction, int destinationId);
 	void moveBack();
 	
-	std::map<std::string, int>::iterator findItem(std::string_view key) { return m_inventory.find(std::string(key)); };
-	int getItemCount(std::string_view key) { return findItem(key) == m_inventory.end() ? 0 : findItem(key)->second; };
+	std::map<std::string, int>::iterator findItem(std::string_view key) { return m_inventory.find(std::string(key)); }
+	int getItemCount(std::string_view key) { return findItem(key) == m_inventory.end() ? 0 : findItem(key)->second; }
 	void addItem(std::string_view key);
 	void removeItem(std::string_view key);
 
-	void clearInventory() { m_inventory.clear(); };
+	std::map<std::string, int>& getInventory() { return m_inventory; }
+	void clearInventory() { m_inventory.clear(); }
 	void printInventory();
 	void printStatus();
 

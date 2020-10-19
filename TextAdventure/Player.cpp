@@ -62,7 +62,7 @@ void Player::addItem(std::string_view key)
 void Player::removeItem(std::string_view key)
 {
 	auto item{ findItem(key) };
-	item->second == 1 ? m_inventory.erase(item->first) : --(item->second);
+	if (item != m_inventory.end()) item->second == 1 ? m_inventory.erase(item->first) : --(item->second);
 }
 
 void Player::printInventory()
