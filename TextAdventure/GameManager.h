@@ -36,6 +36,8 @@ public:
 	bool playAgain();
 	void reset();
 
+	Player& getPlayer() { return m_player; }
+
 };
 
 #endif

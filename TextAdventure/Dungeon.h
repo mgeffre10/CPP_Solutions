@@ -35,6 +35,7 @@ public:
 	Position determinePosition(Position currentRoomPos, char direction);
 	std::vector<Room>::iterator roomAtPosition(Position position);
 
+	std::vector<Room> getRooms() { return m_rooms; }
 	void printMap();
 	void resetDungeon() { m_rooms.clear(); };
 };

@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "../TextAdventure/Player.h"
 #include "../TextAdventure/Player.cpp"
-
-#include <map>
-#include <string>
-
 TEST(InventoryTest, AddItemToInventory)
 {
 	// Arrange
