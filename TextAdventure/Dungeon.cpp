@@ -62,6 +62,8 @@ void Dungeon::createRooms(int count, RoomType type, int &currentIndex, std::vect
 
 void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 {
+	int numOfRooms{ static_cast<int>(rooms.size()) }; // Used in case all rooms are not able to be added
+
 	m_rooms.push_back(rooms[0]);
 	rooms.erase(rooms.begin());
 	std::shuffle(rooms.begin(), rooms.end(), Random::mersenne);
@@ -132,8 +134,11 @@ void Dungeon::generateAdjacentRooms(std::vector<Room> &rooms)
 			
 			if (roomIter == m_rooms.end())
 			{
-				std::cerr << "Unable to add all rooms, exiting.\n";
-				exit(0);
+				std::cerr << "Unable to add all rooms, restarting dungeon generation.\n";
+				m_rooms.empty();
+				rooms = generateRoomTypes(numOfRooms);
+				generateAdjacentRooms(rooms);
+				return;
 			}
 
 			currentRoomIter = roomIter;
