@@ -1,6 +1,6 @@
-#include "pch.h"
+//#include "pch.h"
 #include "DungeonTest.h"
-#include "../TextAdventure/Dungeon.cpp"
+#include "../TextAdventure/Dungeon.h"
 
 void DungeonTest::generateRooms(int roomCount)
 {

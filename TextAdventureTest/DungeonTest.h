@@ -3,7 +3,7 @@
 #include "pch.h"
 
 #include "../TextAdventure/Structs.h"
-#include "../TextAdventure/Spider.h"
+
 class DungeonTest
 {
 private:

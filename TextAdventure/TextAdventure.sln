@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextAdventure", "TextAdvent
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextAdventureTest", "..\TextAdventureTest\TextAdventureTest.vcxproj", "{16A27D5E-3EE1-45F3-881B-4108059659DD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextAdventureLib", "..\TextAdventureLib\TextAdventureLib.vcxproj", "{C9235F5F-D857-441A-B898-B0332EDC53A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{16A27D5E-3EE1-45F3-881B-4108059659DD}.Release|x64.Build.0 = Release|x64
 		{16A27D5E-3EE1-45F3-881B-4108059659DD}.Release|x86.ActiveCfg = Release|Win32
 		{16A27D5E-3EE1-45F3-881B-4108059659DD}.Release|x86.Build.0 = Release|Win32
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Debug|x64.ActiveCfg = Debug|x64
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Debug|x64.Build.0 = Debug|x64
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Debug|x86.ActiveCfg = Debug|Win32
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Debug|x86.Build.0 = Debug|Win32
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Release|x64.ActiveCfg = Release|x64
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Release|x64.Build.0 = Release|x64
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Release|x86.ActiveCfg = Release|Win32
+		{C9235F5F-D857-441A-B898-B0332EDC53A8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,6 @@
 #include "pch.h"
-//#include "../TextAdventure/Enums.h"
 #include "DungeonTest.h"
-#include "../TextAdventure/Spider.cpp"
+#include "../TextAdventure/Spider.h"
 
 TEST(DungeonGenerationTest, ValidateNumberOfRoomsGenerated)
 {
@@ -70,7 +69,7 @@ TEST(DungeonGenerationTest, ValidateRoomTypesAreSeparate)
 		int roomTypesSame{ 0 };
 		if (room.type != RoomType::Empty)
 		{
-			roomTypesSame = std::count_if(
+			roomTypesSame = static_cast<int>(std::count_if(
 						dungeonMap.begin(),
 						dungeonMap.end(),
 						[dungeonMap](const Room& entry) {
@@ -79,7 +78,9 @@ TEST(DungeonGenerationTest, ValidateRoomTypesAreSeparate)
 								auto roomIter{ std::find_if(dungeonMap.begin(), dungeonMap.end(), [connectedRoom](const Room& room) {return room.id == connectedRoom.second; }) };
 								return entry.type == roomIter->type;
 							}
-						});
+
+							return false;
+						}));
 
 			EXPECT_EQ(roomTypesSame, 0);
 		}
